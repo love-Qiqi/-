@@ -15,8 +15,8 @@
             android:name="LSPosedModule"
             android:value="true" />
         <meta-data
-            android:name="LSPosed-MinSdkVersion"
-            android:value="30" />
+            android:name="LSPosed-MinModuleVersion"
+            android:value="1" />
 
         <!-- Settings UI -->
         <activity
