@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ReadTTS</string>
+    <string name="settings_title">ReadTTS 设置</string>
+    <string name="api_key_label">MiniMax API Key</string>
+    <string name="api_key_hint">输入你的 MiniMax API Key</string>
+    <string name="voice_label">选择音色</string>
+    <string name="speed_label">语速</string>
+    <string name="speed_hint">0.5 - 2.0，建议 1.0</string>
+    <string name="btn_test">测试朗读</string>
+    <string name="btn_save">保存设置</string>
+    <string name="status_ready">就绪</string>
+
+    <string name="voice_female_tianmei">女声-甜美</string>
+    <string name="voice_male_qingse">男声-清晰</string>
+    <string name="voice_female_yunyang">女声-云扬</string>
+    <string name="voice_male_zhouzhao">男声-周昭</string>
+    <string name="voice_female_shawn">女声-Shawn</string>
+</resources>
