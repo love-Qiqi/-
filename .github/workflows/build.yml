@@ -5,9 +5,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,7 +16,7 @@ jobs:
       - name: Setup Java
         run: |
           sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk wget unzip
+          sudo apt-get install -y openjdk-17-jdk unzip
           java -version
 
       - name: Setup Android SDK
@@ -29,15 +26,15 @@ jobs:
           curl -sL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o cmdline-tools.zip
           unzip -q cmdline-tools.zip
           mv cmdline-tools latest
-          export ANDROID_HOME=~/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-          yes | sdkmanager --licenses 2>/dev/null || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          echo "ANDROID_HOME=~/android-sdk" >> $GITHUB_ENV
+          export PATH=$PATH:~/android-sdk/cmdline-tools/latest/bin
+          yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
+          ~/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Build debug APK
         env:
           ANDROID_HOME: ~/android-sdk
-          PATH: ${{ env.PATH }}:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         run: |
           cd app
           curl -sL https://services.gradle.org/distributions/gradle-8.4-bin.zip -o /tmp/gradle.zip
@@ -45,9 +42,7 @@ jobs:
           export GRADLE_HOME=/tmp/gradle-8.4
           export PATH=$PATH:$GRADLE_HOME/bin
           gradle --version
-          gradle assembleDebug --no-daemon 2>&1
-          echo "=== Build output ==="
-          ls -la app/build/outputs/apk/debug/ 2>/dev/null || echo "APK not found"
+          gradle assembleDebug --no-daemon
 
       - name: Upload APK
         if: success()
@@ -56,8 +51,8 @@ jobs:
           name: ReadTTS-debug
           path: app/build/outputs/apk/debug/*.apk
 
-      - name: Show error logs
+      - name: Show logs on failure
         if: failure()
         run: |
-          cat app/build/outputs/logs/*.log 2>/dev/null || true
           find app/build -name "*.log" 2>/dev/null | head -5
+          cat app/build/reports/**/*.txt 2>/dev/null || true
